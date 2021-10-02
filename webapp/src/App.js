@@ -1,24 +1,34 @@
 import logo from './logo.svg';
 import './App.css';
+import EnrollPage from './components/EnrollPage';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import Header from './components/Header';
+import MessagesPage from './components/MessagesPage';
+import AdminPage from './components/AdminPage';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <div style={{ marginTop: '90px' }}>
+        <Switch>
+          <Route path="/" exact>
+            <EnrollPage />
+          </Route>
+          <Route path="/messages" exact>
+            <MessagesPage />
+          </Route>
+          <Route path="/admin" exact>
+            <AdminPage />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 

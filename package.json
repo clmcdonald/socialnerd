@@ -1,0 +1,6 @@
+{
+  "dependencies": {},
+  "scripts": {
+    "deploy": "yarn --cwd webapp build && firebase deploy"
+  }
+}
