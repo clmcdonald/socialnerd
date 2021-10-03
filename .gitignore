@@ -65,4 +65,4 @@ node_modules/
 # dotenv environment variables file
 .env
 
-src/index.js
+webapp/src/index.js

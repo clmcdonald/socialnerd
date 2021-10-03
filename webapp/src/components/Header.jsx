@@ -17,7 +17,7 @@ export default function Header() {
         <AppBar>
             <Toolbar>
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Button style={{ color: '#fff' }} onClick={() => history.push('/?user=' + selectedUser)}>SocialNerd</Button>
+                    <Button style={{ color: '#fff' }} onClick={() => history.push('/?user=' + selectedUser)}>Social Nerd</Button>
                     <Button style={{ color: '#fff' }} onClick={() => history.push('/messages?user=' + selectedUser)}>Messages</Button>
                 </div>
             </Toolbar>

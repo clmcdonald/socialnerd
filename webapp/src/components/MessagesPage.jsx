@@ -15,7 +15,17 @@ import moment from 'moment';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
+
+const usernameToImage = {
+    Connor: 'guy1.jpg',
+    Ricky: 'guy2.jpg',
+    Samuel: 'guy3.jpg',
+    Andre: 'guy4.jpg',
+    Marvin: 'guy5.jpg',
+    Sarah: 'woman2.jpg',
+    Cindy: 'woman1.jpg',
+};
 
 export default function EnrollSuccess() {
     const history = useHistory();
@@ -123,8 +133,7 @@ export default function EnrollSuccess() {
                 const usersObj = {};
                 users.forEach((u) => {
                     usersObj[u.id] = u;
-                })
-                console.log('retrieved all users', usersObj);
+                });
                 setUsers(usersObj);
             });
         }
@@ -139,13 +148,20 @@ export default function EnrollSuccess() {
     }, [alertMessage]);
 
     const getAvatarLetter = (username) => {
-        console.log('getAvatarLetter', username);
         if (!username || username.trim().length === 0)
             return null;
         return username.substring(0, 1).toUpperCase();
     };
 
     const renderAvatar = (avatarLetter, style, senderName, gender) => {
+        const image = usernameToImage[senderName];
+        if (image) {
+            return (
+                <Tooltip title={senderName}>
+                    <Avatar src={`/${image}`} style={style}>{avatarLetter}</Avatar>
+                </Tooltip>
+            );
+        }
         return (
             <Tooltip title={senderName}>
                 <Avatar sx={{ bgcolor: gender === 'female' ? pink[500] : blue[500] }} style={style}>{avatarLetter}</Avatar>
@@ -157,9 +173,7 @@ export default function EnrollSuccess() {
         if (users && Object.keys(users).length > 0) {
             const messageSender = users[message.sender];
             if (messageSender != null) {
-                console.log('messageSender', messageSender);
                 const avatarLetter = getAvatarLetter(messageSender.username);
-                console.log('avatarLetter', avatarLetter);
                 return (
                     <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px', marginRight: '10px', paddingBottom: '10px', marginBottom: '10px' }}>
                         {messageSender.id !== user.id && renderAvatar(avatarLetter, { marginRight: '10px' }, messageSender.username, messageSender.gender)}
@@ -196,10 +210,10 @@ export default function EnrollSuccess() {
     const renderCard = (userForCard) => {
         const avatarLetter = getAvatarLetter(userForCard.username);
         return (
-            <Card sx={{ width: 275, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Card sx={{ width: 275, display: 'flex', alignItems: 'center', flexDirection: 'column', marginRight: '5px' }}>
                 <CardContent>
-                    {renderAvatar(avatarLetter, { marginLeft: 'auto', marginRight: 'auto' }, userForCard.username, userForCard.gender)}
-                    <div style={{ marginTop: '5px' }}>{userForCard.username}</div>
+                    {renderAvatar(avatarLetter, { marginLeft: 'auto', marginRight: 'auto', width: 70, height: 70 }, userForCard.username, userForCard.gender)}
+                    <div style={{ marginTop: '5px', textAlign: 'center' }}>{userForCard.username}</div>
                 </CardContent>
                 <CardActions>
                     <Button size="small" variant="contained" onClick={async () => {
@@ -225,8 +239,8 @@ export default function EnrollSuccess() {
 
     if (group === undefined) {
         return (
-            <div style={{ textAlign: 'center' }}>
-                <h1>Loading...</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                <CircularProgress />
             </div>
         );
     }
@@ -268,7 +282,6 @@ export default function EnrollSuccess() {
 
     if (group.closed === true && user.gender === 'female') {
         const userForCard = users[Object.keys(users)[0]];
-        console.log('userForCard', userForCard);
         if (userForCard) {
             return (
                 <div style={{ display: 'flex', padding: '0 10px', justifyContent: 'space-around' }}>
@@ -290,6 +303,13 @@ export default function EnrollSuccess() {
         <div style={{ textAlign: 'center' }}>
             {enrolled && showEnrollMessage && 'Enrolled successfully'}
             {group.private && <div style={{ marginBottom: '10px' }}>Private Room</div>}
+            <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px', marginBottom: '20px', justifyContent: 'center' }}>
+                {Object.keys(users).map((userId) => {
+                    const u = users[userId];
+                    const avatarLetter = getAvatarLetter(u.username);
+                    return renderAvatar(avatarLetter, { marginRight: '10px' }, u.username, u.gender);
+                })}
+            </div>
             {alertMessage && <Alert style={{ margin: '10px' }} severity="error">Must have at least 1 character typed</Alert>}
             {messages.map(renderMessage)}
             {user.gender === 'female' && <Button variant="contained" color="error" style={{ marginBottom: '10px' }} onClick={async () => {

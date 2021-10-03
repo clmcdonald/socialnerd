@@ -1,10 +1,10 @@
-import React from 'react';
-import Button from '@mui/material/Button';
+import React, { useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { doc, deleteDoc, collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
-import { useHistory } from "react-router-dom";
 
 export default function AdminPage() {
-    const history = useHistory();
+    const [resettingData, setResettingData] = useState(false);
+    const [clearingMessages, setClearingMessages] = useState(false);
 
     const clearCollection = async (collectionName) => {
         const db = getFirestore();
@@ -23,14 +23,16 @@ export default function AdminPage() {
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
             <div>
-                <Button variant="contained" style={{ marginBottom: '20px' }} onClick={async () => {
-                    clearCollection('messages');
-                    history.push('/messages?user=connor')
-                }}>Clear all messages</Button>
+                <LoadingButton loading={clearingMessages} variant="contained" style={{ marginBottom: '20px' }} onClick={async () => {
+                    setClearingMessages(true);
+                    await clearCollection('messages');
+                    setClearingMessages(false);
+                }}>Clear all messages</LoadingButton>
             </div>
 
             <div>
-                <Button variant="contained" style={{ marginBottom: '20px' }} onClick={async () => {
+                <LoadingButton loading={resettingData} variant="contained" style={{ marginBottom: '20px' }} onClick={async () => {
+                    setResettingData(true);
                     await clearCollection('messages');
                     console.log('Cleared messages');
                     await clearCollection('users');
@@ -82,7 +84,8 @@ export default function AdminPage() {
                         users: [connorId, rickyId, samuelId, andreId, marvinId],
                     });
                     console.log('Added group');
-                }}>Reset data for demo</Button>
+                    setResettingData(false);
+                }}>Reset data for demo</LoadingButton>
             </div>
         </div>
     )
